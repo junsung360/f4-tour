@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>꽃보다 독서실 – F4 360° 투어</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ---- 이 페이지 디자인 ---- */
+:root{color-scheme:dark;--bg:#14111f;--ink:#f6f2fa;--mut:#bdb4cc;--glass:rgba(20,17,31,.8);--line:rgba(255,255,255,.2);--c:#3a86ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+body{position:relative;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif}
+#pano{position:absolute;inset:0;background:var(--bg)}
+.top,.card,.tools,#hint,#toast{z-index:5}
+.top{position:absolute;left:0;right:0;top:0;padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;background:linear-gradient(rgba(20,17,31,.85),rgba(20,17,31,0));pointer-events:none}
+h1{margin:0;font:700 clamp(18px,3.2vw,26px)/1.2 "Gowun Batang",serif}
+h1 small{display:block;font:400 12px "Noto Sans KR",sans-serif;color:var(--mut);margin-top:3px}
+nav{display:flex;gap:8px;flex-wrap:wrap;pointer-events:auto}
+nav button{font:500 13px "Noto Sans KR",sans-serif;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;display:flex;align-items:center;gap:7px;backdrop-filter:blur(8px)}
+nav button i{width:9px;height:9px;border-radius:50%;background:var(--k)}
+nav button[aria-current=true]{border-color:var(--k);box-shadow:0 0 0 1px var(--k) inset}
+button:focus-visible,.hs:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.hs{width:54px;height:54px;box-sizing:border-box}
+.hs:hover,.hs:focus-visible{z-index:5}
+.hs .ic{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;font-size:22px;background:var(--glass);border:2px solid var(--k);box-shadow:0 0 0 6px color-mix(in srgb,var(--k) 30%,transparent);animation:pulse 2s infinite}
+.hs .lb{position:absolute;top:62px;left:50%;transform:translateX(-50%);font:700 12px "Noto Sans KR",sans-serif;background:var(--glass);border:1px solid var(--line);padding:3px 9px;border-radius:999px;white-space:nowrap}
+.tip{position:absolute;top:50%;left:calc(100% + 12px);transform:translateY(-50%) scale(.92);transform-origin:left center;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;display:flex;gap:10px;align-items:center;width:max-content;max-width:250px;padding:10px 12px;border-radius:16px;background:var(--glass);border:1px solid var(--k);text-align:left;backdrop-filter:blur(8px)}
+.hs.flip .tip{left:auto;right:calc(100% + 12px);transform-origin:right center}
+.hs:hover .tip,.hs:focus-visible .tip{opacity:1;transform:translateY(-50%)}
+.tip .av{width:40px;height:40px;font-size:18px;background:var(--k);box-shadow:none}
+.tip b{font-size:13px}.tip small{color:var(--mut);margin-left:6px;font-size:11px}
+.tx{display:block}.ln{display:block;margin-top:3px;font-size:13px;line-height:1.45}
+@keyframes pulse{50%{box-shadow:0 0 0 12px transparent}}
+.card{position:absolute;left:16px;bottom:16px;max-width:min(440px,calc(100% - 32px));display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:18px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px)}
+.card.pop{animation:pop .45s}
+@keyframes pop{from{transform:translateY(14px);opacity:0}}
+.av{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font:700 28px "Gowun Batang",serif;background:var(--c);color:#fff;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c);overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.who{font-weight:700;font-size:15px}
+.who em{font-style:normal;font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
+.place{font:700 13px "Noto Sans KR",sans-serif;color:var(--c);margin:2px 0 6px}
+.say{margin:0;font-size:14px;line-height:1.65}
+.tools{position:absolute;right:16px;bottom:16px}
+.tools button{font:400 12px "Noto Sans KR",sans-serif;color:var(--mut);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer}
+#toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:var(--glass);border:1px solid var(--line);padding:8px 14px;border-radius:12px;font-size:12px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#hint{position:absolute;left:50%;top:68%;transform:translateX(-50%);font-size:12px;color:var(--mut);background:var(--glass);padding:6px 14px;border-radius:999px;transition:opacity .6s;pointer-events:none;white-space:nowrap}
+@media(max-width:640px){.card{right:16px;max-width:none;bottom:60px}#toast{bottom:190px}}
+@media(prefers-reduced-motion:reduce){.hs .ic,.card.pop{animation:none}}
+</style>
+</head>
+<body>
+<div id="pano"></div>
+<div class="top">
+  <h1>꽃보다 독서실<small>F4가 안내하는 독서실 4곳 · 360° 투어</small></h1>
+  <nav id="nav" aria-label="독서실 바로가기"></nav>
+</div>
+<div id="hint">드래그해서 둘러보기 · 아이콘에 마우스를 올려 보세요</div>
+<div class="card" id="card" aria-live="polite">
+  <div class="av" id="av"></div>
+  <div><div class="who" id="who"></div><div class="place" id="place"></div><p class="say" id="say"></p></div>
+</div>
+<div class="tools"><button id="pick" type="button">핫스팟 위치 잡기</button></div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script>
+const P=Array.from({length:13},(_,i)=>'images/'+i+'.jpg');  // 장소 번호 순서대로 360° 사진
+
+// 안내 캐릭터. img에 일러스트 주소를 넣으면 글자 아바타 대신 표시됩니다.
+const G={
+ jp:{n:'구준표',i:'구',c:'#d7263d',r:'F4 리더',img:''},
+ jh:{n:'윤지후',i:'윤',c:'#3a86ff',r:'잠꾸러기',img:''},
+ yj:{n:'소이정',i:'소',c:'#f4a259',r:'도예가',img:''},
+ ub:{n:'송우빈',i:'송',c:'#a56cf2',r:'분위기 메이커',img:''}
+};
+// n 장소명, g 안내 캐릭터, s 처음 보는 방향(사진 가로 비율), hi 마우스 올렸을 때 한마디, say 도착했을 때 설명
+// l 이동 핫스팟 [갈 장소 번호, x, y]  x=사진 가로 위치(0~1), y=세로 위치(0~1, 위쪽이 0)
+const S=[
+ {n:'본부동 지하 1층',g:'jh',s:.45,hi:'…여기, 조용해서 좋아.',say:'본부동 지하 독서실이야. 칸막이 책상이 줄지어 있어서 집중하기 좋지. …졸리면 깨워 줘.',l:[[1,.148,.47]]},
+ {n:'본부동 독서실 앞 복도',g:'jh',s:.5,hi:'복도 끝에 독서실이 있어.',say:'독서실 문 앞 복도야. 유리문 안쪽이 바로 열람실이지. 들어가기 전에 조용히 하자.',l:[[0,.495,.48],[2,.245,.5]]},
+ {n:'본부동 지하 로비',g:'jh',s:.5,hi:'엘리베이터 타고 내려와.',say:'본부동 지하 로비야. 엘리베이터로 내려와서 안쪽 복도로 쭉 가면 독서실이 나와.',l:[[1,.5,.52],[3,.385,.47]]},
+ {n:'본부동 앞 길',g:'jh',s:.49,hi:'본부동 앞이야.',say:'본부동 앞이야. 여기서 진리관, 도서관 쪽으로 길이 나뉘어. 어디부터 갈래?',l:[[2,.485,.47],[6,.1,.58],[4,.93,.58]]},
+ {n:'도서관 가는 길',g:'jp',s:.52,hi:'도서관은 이 구준표가 접수했다!',say:'이 길 끝이 도서관이다. 단풍 든 길이 끝내주지? 이 구준표를 따라와!',l:[[5,.515,.5],[3,.035,.58],[9,.865,.56]]},
+ {n:'도서관 2층',g:'jp',s:.47,hi:'도서관 2층, 나만 믿고 와!',say:'여기가 도서관 2층이다. 넓고, 환하고, 자리도 넉넉하지. 이 구준표가 인정한 열람실이야!',l:[[4,.965,.48]]},
+ {n:'진리관 입구',g:'ub',s:.51,hi:'진리관 입구에서 만나~',say:'진리관 앞이야. 지하 1층에 독서 공간도 있고 편의점도 있어. 간식 챙겨서 들어가자고~',l:[[8,.51,.49],[3,.03,.55]]},
+ {n:'진리관 편의점',g:'ub',s:.45,hi:'공부 전에 간식부터!',say:'편의점이 독서 공간 바로 옆이라니, 센스 있지? 간식이랑 음료, 보급은 여기서 해결~',l:[[8,.1,.46]]},
+ {n:'진리관 지하 1층',g:'ub',s:.45,hi:'지하 1층으로 가자!',say:'진리관 지하 1층이야. 테이블도 소파도 많아서 혼자서도, 같이도 공부하기 좋지. 편의점은 바로 옆이고~',l:[[7,.408,.53],[6,.01,.48]]},
+ {n:'목양관 입구',g:'yj',s:.47,hi:'목양관, 운치 있는 곳이지.',say:'목양관이야. 붉은 벽돌 건물이 참 운치 있지 않아? 3층까지 천천히 올라가 보자.',l:[[10,.47,.48],[4,.8,.62]]},
+ {n:'목양관 1층 로비',g:'yj',s:.35,hi:'계단으로 올라가 볼까.',say:'1층 로비야. 3층 라운지는 계단으로 올라가면 돼. 한 계단씩, 여유를 갖고.',l:[[9,.23,.5],[11,.735,.52]]},
+ {n:'목양관 계단',g:'yj',s:.5,hi:'조금만 더 올라가면 돼.',say:'계단이 좀 길지? 창가로 들어오는 빛이 예쁘니까 잠깐 쉬어 가도 좋아.',l:[[12,.115,.52],[10,.92,.54]]},
+ {n:'목양관 3층',g:'yj',s:.45,hi:'3층 라운지, 내 취향이야.',say:'목양관 3층이야. 원목 테이블에 조명까지, 공부도 작품처럼 하기 좋은 공간이지.',l:[[11,.262,.52]]}
+];
+const TABS=[0,8,12,5];
+
+const $=id=>document.getElementById(id);
+const av=g=>g.img?'<img alt="'+g.n+'" src="'+g.img+'">':g.i;
+let pickOn=false,tt;
+function toast(m){const e=$('toast');e.textContent=m;e.style.opacity=m?1:0;clearTimeout(tt);tt=setTimeout(()=>e.style.opacity=0,6000)}
+
+// 핫스팟 모양: 아이콘 + 장소 이름 + 마우스 올리면 나오는 캐릭터 말풍선
+function mk(div,to){
+  const t=S[to],h=G[t.g];
+  div.style.setProperty('--k',h.c);div.tabIndex=0;div.setAttribute('role','button');div.setAttribute('aria-label',t.n+'(으)로 이동');
+  div.innerHTML='<span class="ic">➜</span><span class="lb">'+t.n+'</span><span class="tip"><span class="av">'+av(h)+'</span><span class="tx"><b>'+h.n+'</b><small>'+t.n+'</small><span class="ln">'+t.hi+'</span></span></span>';
+  div.addEventListener('mouseenter',()=>div.classList.toggle('flip',div.getBoundingClientRect().left>innerWidth*.55));
+  div.addEventListener('keydown',e=>{if(e.key==='Enter')div.click()});
+}
+
+// Pannellum 장면(scene) 구성: yaw=(x-0.5)*360, pitch=(0.5-y)*180
+addEventListener('error',e=>toast('오류: '+e.message));
+const scenes={};
+S.forEach((s,i)=>{scenes['s'+i]={type:'equirectangular',panorama:P[i],yaw:(s.s-.5)*360,pitch:0,hfov:100,
+  hotSpots:s.l.map(([to,x,y])=>({type:'scene',sceneId:'s'+to,yaw:(x-.5)*360,pitch:(.5-y)*180,cssClass:'hs',createTooltipFunc:mk,createTooltipArgs:to}))}});
+const v=pannellum.viewer('pano',{default:{firstScene:'s0',sceneFadeDuration:700,autoLoad:true,showControls:false,hfov:100,minHfov:50,maxHfov:120},scenes});
+v.on('scenechange',id=>ui(+id.slice(1)));
+v.on('error',m=>toast('Pannellum 오류: '+m));
+
+function ui(i){
+  const s=S[i],g=G[s.g];
+  document.documentElement.style.setProperty('--c',g.c);
+  $('who').innerHTML=g.n+'<em>'+g.r+'</em>';$('place').textContent=s.n;$('say').textContent=s.say;$('av').innerHTML=av(g);
+  $('card').classList.remove('pop');void $('card').offsetWidth;$('card').classList.add('pop');
+  [...$('nav').children].forEach((b,k)=>b.setAttribute('aria-current',S[TABS[k]].g===s.g));
+}
+TABS.forEach(i=>{const b=document.createElement('button');b.type='button';b.style.setProperty('--k',G[S[i].g].c);
+  b.innerHTML='<i></i>'+S[i].n;b.onclick=()=>v.loadScene('s'+i);$('nav').appendChild(b)});
+ui(0);
+
+// 핫스팟 위치 잡기: 켜고 사진을 클릭하면 x, y 좌표가 표시되고 복사됩니다.
+let dn;
+$('pano').addEventListener('pointerdown',e=>{dn=[e.clientX,e.clientY];$('hint').style.opacity=0},true);
+$('pano').addEventListener('click',e=>{
+  if(!pickOn||!dn||Math.abs(e.clientX-dn[0])+Math.abs(e.clientY-dn[1])>5)return;
+  const [p,y]=v.mouseEventToCoords(e),t='x:'+(y/360+.5).toFixed(3)+', y:'+(.5-p/180).toFixed(3);
+  try{navigator.clipboard.writeText(t).catch(()=>{})}catch(_){}
+  toast(S[+v.getScene().slice(1)].n+'  '+t);
+});
+$('pick').onclick=()=>{pickOn=!pickOn;$('pick').textContent=pickOn?'위치 잡기 끄기':'핫스팟 위치 잡기';toast(pickOn?'사진을 클릭하면 x, y 좌표가 표시돼요':'')};
+</script>
+</body>
+</html>
